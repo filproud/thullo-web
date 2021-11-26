@@ -12,4 +12,4 @@ Pasos a seguir para probar los cambios (lista numerada con los pasos)
 
 ### Images
 
-Alguna imagen o imágenes de lo que se ha realizado. Si es necesario mostrar imágenes de las distintas versiones del responsive (móvil, tablet, laptop, desktop, etc)
+Alguna imagen o imágenes de lo que se ha realizado. Si es necesario mostrar imágenes de las distintas versiones del responsive (móvil, tablet, laptop, desktop, etc) 
