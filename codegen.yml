@@ -1,0 +1,30 @@
+overwrite: true
+schema:
+  - ${REACT_APP_GRAPHQL_ENDPOINT}
+documents:
+  - 'src/api/fragments/**/*.ts'
+  - 'src/api/queries/**/*.ts'
+  - 'src/api/mutations/**/*.ts'
+generates:
+  src/api/generated/index.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+    config:
+      scalars:
+        Date: string
+        DateTime: string
+        GenericScalar: unknown
+        Time: string
+        UUID: string
+      # There is a conflict with backend types. It generates a VehicleType as a type
+      # and also an enum called VehicleType, there can't be two types with the same
+      # name, so we have to resort to prefixing types and not doing so on enums
+      # therefore we solve the problem. The perfect solution would be to have it solve
+      # on the backend or prefix the enums and not the types, however I could not achieve
+      # the latter so I ask backend team to look into this issue. If it's solved
+      # remove the next two lines and this comment too
+      typesPrefix: 'I'
+      enumPrefix: false
+      strictScalars: true
+      skipTypename: true

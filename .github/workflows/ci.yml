@@ -1,0 +1,90 @@
+name: CI Workflow
+
+on:
+  push:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+  testing:
+    needs: setup
+    name: Lint, unit and ui testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Load node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Install dependencies if not cached
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: Lint code
+        run: yarn lint
+
+      - name: Check type errors
+        run: yarn tsc
+
+      - name: Unit and UI tests
+        run: yarn test
+
+  build:
+    needs: setup
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Load node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Install dependencies if not cached
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: Build production
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'development'
+        run: yarn build
+
+      - name: Build development
+        if: github.event_name == 'push' && github.ref != 'refs/heads/master'
+        run: yarn build
+
+      - name: Build Storybook
+        run: yarn build-storybook
+
+      - name: Store build output
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: build
+
+      - name: Store Storybook output
+        uses: actions/upload-artifact@v2
+        with:
+          name: storybook-static
+          path: storybook-static
