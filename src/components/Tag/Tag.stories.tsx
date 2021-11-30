@@ -7,4 +7,8 @@ export default {
   title: 'Tag',
 } as Meta;
 
-export const Default = () => <Tag />;
+export const Default = () => <Tag title="Concept" />;
+
+export const WithCustomColor = () => (
+  <Tag title="Concept" textColor="#219653" backgroundColor="#D3EADD" />
+);
