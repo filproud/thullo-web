@@ -7,6 +7,6 @@ export default {
   title: 'Logo',
 } as Meta;
 
-export const Default = () => <Logo username="example" />;
+export const Default = () => <Logo title="Thullo" />;
 
-export const Disabled = () => <Logo username="example" />;
+export const Disabled = () => <Logo title="Thullo" />;
